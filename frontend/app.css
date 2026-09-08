@@ -1464,3 +1464,200 @@ input:checked + .slider:before {
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   7. SEAMLESS DARK MODE (PRESERVES 100% OF ORIGINAL DESIGN & LAYOUT)
+   ========================================================================== */
+body, .top-navbar, .sidebar, .sub-nav-tabs, .card, .component-status-list,
+.compute-card, .model-cfg-card, .cfg-json-accordion, .chat-thread-container,
+.input-field-wrapper, .protocol-item {
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+
+body.dark-mode,
+[data-theme="dark"] {
+  --bg-app: #080d1a;
+  --bg-surface: #0e1626;
+  --bg-surface-alt: #131f33;
+  --bg-sidebar: #0b1220;
+
+  --border-subtle: #1e293b;
+  --border-card: #1f2d47;
+  --border-focus: #818cf8;
+
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-light: #64748b;
+
+  --shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-card: 0 4px 14px rgba(0, 0, 0, 0.45);
+}
+
+body.dark-mode .top-navbar {
+  background-color: #0e1626;
+  border-bottom-color: #1e293b;
+}
+
+body.dark-mode .brand-title {
+  color: #f8fafc;
+}
+
+body.dark-mode .brand-stethoscope-icon {
+  color: #818cf8;
+}
+
+body.dark-mode .header-center-title {
+  color: #94a3b8;
+}
+
+body.dark-mode .sub-nav-tabs {
+  background-color: #0e1626;
+  border-bottom-color: #1e293b;
+}
+
+body.dark-mode .nav-tab {
+  color: #94a3b8;
+}
+
+body.dark-mode .nav-tab:hover {
+  color: #f8fafc;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+body.dark-mode .nav-tab.active {
+  color: #818cf8;
+  border-bottom-color: #818cf8;
+}
+
+body.dark-mode .sidebar {
+  background-color: #0b1220;
+  border-right-color: #1e293b;
+}
+
+body.dark-mode .s-title {
+  color: #f8fafc;
+}
+
+body.dark-mode .btn-new-consultation {
+  background-color: #1e1b4b;
+  border-color: #3730a3;
+  color: #e0e7ff;
+}
+
+body.dark-mode .btn-new-consultation:hover {
+  background-color: #312e81;
+  border-color: #4f46e5;
+  color: #ffffff;
+}
+
+body.dark-mode .protocol-item {
+  background-color: #0e1626;
+  border-color: #1e293b;
+}
+
+body.dark-mode .protocol-item:hover {
+  background-color: #162238;
+  border-color: #38bdf8;
+}
+
+body.dark-mode .protocol-text {
+  color: #e2e8f0;
+}
+
+body.dark-mode .system-nav-item {
+  color: #94a3b8;
+}
+
+body.dark-mode .system-nav-item:hover {
+  background-color: #162238;
+  color: #38bdf8;
+}
+
+body.dark-mode .pane-title,
+body.dark-mode .sys-block-title,
+body.dark-mode .hero-title {
+  color: #f8fafc;
+}
+
+body.dark-mode .component-status-list,
+body.dark-mode .compute-card,
+body.dark-mode .model-cfg-card,
+body.dark-mode .cfg-json-accordion,
+body.dark-mode .status-metric-card,
+body.dark-mode .doc-item-card {
+  background-color: #0e1626;
+  border-color: #1e293b;
+}
+
+body.dark-mode .comp-status-row {
+  border-bottom-color: #1a253a;
+}
+
+body.dark-mode .comp-status-row:last-child {
+  border-bottom: none;
+}
+
+body.dark-mode .comp-name {
+  color: #f1f5f9;
+}
+
+body.dark-mode .comp-badge {
+  background-color: #111d33;
+  color: #94a3b8;
+}
+
+body.dark-mode .compute-val,
+body.dark-mode .metric-card-val,
+body.dark-mode .model-cfg-name {
+  color: #f8fafc;
+}
+
+body.dark-mode .model-cfg-label,
+body.dark-mode .compute-label,
+body.dark-mode .metric-card-label {
+  color: #94a3b8;
+}
+
+body.dark-mode .model-cfg-meta {
+  color: #64748b;
+}
+
+body.dark-mode .cfg-summary {
+  background-color: #0e1626;
+  color: #cbd5e1;
+}
+
+body.dark-mode .cfg-json-block {
+  background-color: #080d1a;
+  border-top-color: #1e293b;
+  color: #cbd5e1;
+}
+
+body.dark-mode .hero-input-box,
+body.dark-mode .chat-input-textarea {
+  background-color: #0e1626;
+  border-color: #1e293b;
+  color: #f8fafc;
+}
+
+body.dark-mode .hero-input-box:focus-within,
+body.dark-mode .chat-input-textarea:focus {
+  border-color: #818cf8;
+  box-shadow: 0 0 15px rgba(129, 140, 248, 0.25);
+}
+
+body.dark-mode .chat-input-sticky-footer {
+  background-color: #080d1a;
+  border-top-color: #1e293b;
+}
+
+body.dark-mode .btn-clear-history {
+  border-color: #1e293b;
+  color: #94a3b8;
+}
+
+body.dark-mode .btn-clear-history:hover {
+  background-color: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}

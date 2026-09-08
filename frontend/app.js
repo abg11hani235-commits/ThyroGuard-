@@ -38,6 +38,30 @@ const sidebarGotoSystem = document.getElementById("sidebar-goto-system");
 
 const protocolItems = document.querySelectorAll(".protocol-item");
 const observabilityToggle = document.getElementById("observability-toggle");
+const headerModeToggle = document.getElementById("header-mode-toggle");
+
+// -----------------------------------------------------------------------------
+// 0. THEME MANAGEMENT (SEAMLESS DARK / LIGHT TOGGLE)
+// -----------------------------------------------------------------------------
+function applyTheme(theme) {
+  const isDark = (theme === "dark");
+  document.documentElement.setAttribute("data-theme", theme);
+  document.body.classList.toggle("dark-mode", isDark);
+  if (headerModeToggle) {
+    headerModeToggle.checked = isDark;
+  }
+  localStorage.setItem("thyroguard_theme", theme);
+}
+
+// Default to light mode (matching original design), or restore saved preference
+const savedTheme = localStorage.getItem("thyroguard_theme") || "light";
+applyTheme(savedTheme);
+
+if (headerModeToggle) {
+  headerModeToggle.addEventListener("change", (e) => {
+    applyTheme(e.target.checked ? "dark" : "light");
+  });
+}
 
 // -----------------------------------------------------------------------------
 // 1. TAB NAVIGATION
