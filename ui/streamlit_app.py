@@ -21,6 +21,15 @@ st.set_page_config(
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:8000")
 
+# Sync Streamlit Secrets into os.environ for backend pipeline components
+try:
+    if hasattr(st, "secrets"):
+        for sec_key, sec_val in st.secrets.items():
+            if isinstance(sec_val, str) and sec_key not in os.environ:
+                os.environ[sec_key] = sec_val
+except Exception:
+    pass
+
 THEME_CSS = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
