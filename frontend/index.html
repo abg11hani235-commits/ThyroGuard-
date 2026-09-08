@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ThyroGuard AI | Clinical Thyroid Endocrinology Decision Support</title>
+  <link rel="stylesheet" href="app.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%234f46e5%22 stroke-width=%222.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><path d=%22M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3%22/><path d=%22M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4%22/><circle cx=%2220%22 cy=%2210%22 r=%222%22/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Markdown renderer -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+
+<body>
+  <!-- ============================================================= -->
+  <!-- TOP NAVIGATION BAR                                            -->
+  <!-- ============================================================= -->
+  <header class="top-navbar">
+    <div class="brand-group">
+      <div class="brand-stethoscope-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path>
+          <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path>
+          <circle cx="20" cy="10" r="2"></circle>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <div class="brand-title">ThyroGuard AI</div>
+        <div class="brand-sub">CLINICAL THYROID ENDOCRINOLOGY DECISION SUPPORT</div>
+      </div>
+    </div>
+
+    <div class="header-center-title">
+      EVIDENCE-GROUNDED MEDICAL REFERENCE ASSISTANT
+    </div>
+
+    <div class="header-actions">
+      <div class="status-badge-container">
+        <div class="status-pill" id="system-status-pill">
+          <span class="status-dot"></span>
+          <span>Operational</span>
+        </div>
+        <div class="model-tag-sub" id="active-model-tag">qwen3.6-27b</div>
+      </div>
+
+      <div class="toggle-container" title="Toggle System Mode">
+        <label class="switch">
+          <input type="checkbox" id="header-mode-toggle" checked>
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+      <div class="user-avatar-circle" title="Clinical Practitioner Profile">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================= -->
+  <!-- NAVIGATION TABS BAR                                           -->
+  <!-- ============================================================= -->
+  <nav class="sub-nav-tabs">
+    <button class="nav-tab active" data-tab="assistant" id="tab-btn-assistant">
+      <span class="tab-icon">💬</span> Clinical Assistant
+    </button>
+    <button class="nav-tab" data-tab="knowledge" id="tab-btn-knowledge">
+      <span class="tab-icon">📚</span> Knowledge Base
+    </button>
+    <button class="nav-tab" data-tab="system" id="tab-btn-system">
+      <span class="tab-icon">⚙️</span> System & Models
+    </button>
+  </nav>
+
+  <!-- ============================================================= -->
+  <!-- MAIN LAYOUT (SIDEBAR + CONTENT)                               -->
+  <!-- ============================================================= -->
+  <div class="workspace-layout">
+    
+    <!-- ----------------------------------------------------------- -->
+    <!-- LEFT SIDEBAR                                                -->
+    <!-- ----------------------------------------------------------- -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-brand">
+        <div class="sidebar-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path>
+            <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path>
+            <circle cx="20" cy="10" r="2"></circle>
+          </svg>
+        </div>
+        <div class="sidebar-brand-text">
+          <span class="s-title">ThyroGuard</span>
+          <span class="s-sub">CLINICAL WORKSPACE</span>
+        </div>
+      </div>
+
+      <button class="btn-new-consultation" id="sidebar-btn-new">
+        <span class="plus-sign">+</span> New Consultation
+      </button>
+
+      <div class="sidebar-section">
+        <div class="section-title">RECENT CONSULTATIONS</div>
+        <div class="recent-list" id="recent-consultations-list">
+          <div class="empty-recent-msg">No consultations yet in this session.</div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">BOOKMARKED PROTOCOLS</div>
+        <div class="protocol-list">
+          <div class="protocol-item" data-query="What is the recommended initial starting dose of levothyroxine in healthy adults with overt primary hypothyroidism?">
+            <span class="protocol-emoji">💊</span>
+            <span class="protocol-text">Levothyroxine Starting Dose</span>
+          </div>
+          <div class="protocol-item" data-query="What is the recommended initial dose of levothyroxine in elderly patients or patients with documented coronary artery disease?">
+            <span class="protocol-emoji">🫀</span>
+            <span class="protocol-text">Elderly & Cardiac CAD Protocol</span>
+          </div>
+          <div class="protocol-item" data-query="قارن بين خيارات علاج جريفز: اليود المشع والأدوية المضادة للدرقية والجراحة وفق الإرشادات السريرية.">
+            <span class="protocol-emoji">🔬</span>
+            <span class="protocol-text">Graves' Disease Management</span>
+          </div>
+          <div class="protocol-item" data-query="مريض يعاني من حمى شديدة 40 وهذيان وتسرع في ضربات القلب 140، ما هو بروتوكول التعامل الطارئ مع العاصفة الدرقية؟">
+            <span class="protocol-emoji">⚡</span>
+            <span class="protocol-text">Thyroid Storm Emergency</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="section-title">SYSTEM</div>
+        <div class="system-nav-item" id="sidebar-goto-knowledge">
+          <span class="sys-icon">🗄️</span>
+          <span>Document Knowledge Base</span>
+        </div>
+        <div class="system-nav-item" id="sidebar-goto-system">
+          <span class="sys-icon">⚙️</span>
+          <span>Hardware & Models</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section developer-section">
+        <div class="section-title">DEVELOPER</div>
+        <label class="checkbox-container">
+          <input type="checkbox" id="observability-toggle">
+          <span class="checkbox-label">Observability Debug Mode <span class="help-circle" title="View real-time backend pipeline logs and traces">🛈</span></span>
+        </label>
+      </div>
+
+      <div class="sidebar-footer">
+        <button class="btn-clear-history" id="btn-clear-history">
+          🗑️ Clear History
+        </button>
+        <div class="version-label">ThyroGuard Clinical RAG v2.0</div>
+      </div>
+    </aside>
+
+    <!-- ----------------------------------------------------------- -->
+    <!-- MAIN CONTENT AREA                                           -->
+    <!-- ----------------------------------------------------------- -->
+    <main class="content-container">
+
+      <!-- ========================================================= -->
+      <!-- TAB 1: CLINICAL ASSISTANT                                 -->
+      <!-- ========================================================= -->
+      <section class="tab-pane active" id="pane-assistant">
+        
+        <!-- Welcome Hero View (Shown when no active chat) -->
+        <div class="welcome-hero" id="welcome-hero">
+          <div class="hero-stethoscope-graphic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#00b4d8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"></path>
+              <path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"></path>
+              <circle cx="20" cy="10" r="2.2"></circle>
+            </svg>
+          </div>
+
+          <div class="hero-kicker">THYROGUARD CLINICAL INTELLIGENCE</div>
+          <h1 class="hero-title">Evidence-Grounded Medical Reference</h1>
+          <p class="hero-subtitle">
+            Ask questions against your indexed clinical thyroid knowledge base (ATA, ETA & AACE Guidelines).<br>
+            Every response is grounded in retrieved evidence.
+          </p>
+
+          <div class="hero-search-wrapper">
+            <div class="hero-input-box">
+              <input 
+                type="text" 
+                id="hero-query-input" 
+                placeholder="e.g. What is the recommended starting dose for levothyroxine in healthy adults vs cardiac patients?"
+                autocomplete="off"
+              >
+              <button class="btn-hero-send" id="btn-hero-send" title="Evaluate Clinical Evidence">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Active Chat View (Shown when conversation is started) -->
+        <div class="chat-thread-container" id="chat-thread-container" style="display: none;">
+          <div class="chat-top-bar">
+            <button class="btn-top-new-consultation" id="chat-btn-new">
+              + New Consultation
+            </button>
+          </div>
+
+          <div class="messages-feed" id="messages-feed">
+            <!-- Dynamically populated by app.js -->
+          </div>
+
+          <div class="chat-input-sticky-footer">
+            <div class="chat-input-pill">
+              <textarea 
+                id="chat-textarea" 
+                class="chat-textarea" 
+                placeholder="Ask a follow-up clinical question..." 
+                rows="1"
+              ></textarea>
+              <button class="btn-chat-send" id="btn-chat-send" title="Send Question">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- TAB 2: KNOWLEDGE BASE                                     -->
+      <!-- ========================================================= -->
+      <section class="tab-pane" id="pane-knowledge" style="display: none;">
+        <div class="pane-content-wrapper">
+          
+          <div class="pane-header">
+            <h2 class="pane-title">📚 Knowledge Base</h2>
+            <p class="pane-subtitle">
+              Upload clinical guidelines (ATA 2014/2015, ETA, AACE), pharmacopeia, or research PDFs. Documents are chunked, embedded, and indexed into FAISS and BM25 for grounded retrieval.
+            </p>
+          </div>
+
+          <div class="kb-section">
+            <div class="kb-section-header">
+              <h3>Index Status</h3>
+              <span class="chain-icon">🔗</span>
+            </div>
+
+            <div class="status-cards-grid">
+              <div class="status-metric-card">
+                <div class="metric-card-label">FAISS Index</div>
+                <div class="metric-card-status success">
+                  <span class="check-circle">✓</span> Loaded
+                </div>
+              </div>
+
+              <div class="status-metric-card">
+                <div class="metric-card-label">BM25 Index</div>
+                <div class="metric-card-status success">
+                  <span class="check-circle">✓</span> Loaded
+                </div>
+              </div>
+
+              <div class="status-metric-card">
+                <div class="metric-card-label">Indexed Chunks</div>
+                <div class="metric-card-val" id="kb-chunk-count">3,073</div>
+              </div>
+
+              <div class="status-metric-card">
+                <div class="metric-card-label">Retrieval Mode</div>
+                <div class="metric-card-val text-mode">Hybrid (Dense + Sparse)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="kb-section">
+            <div class="kb-section-header">
+              <h3>Upload Clinical Documents</h3>
+            </div>
+            <p class="kb-caption">Supported formats: PDF, DOCX, TXT, CSV, JSON — maximum 50 MB per file.</p>
+
+            <div class="dropzone-box" id="kb-dropzone">
+              <div class="dropzone-inner">
+                <button class="btn-upload-picker">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  Upload
+                </button>
+                <span class="dropzone-hint">200MB per file • PDF, DOCX, TXT, CSV, JSON</span>
+              </div>
+              <input type="file" id="kb-file-input" style="display: none;" multiple accept=".pdf,.docx,.txt,.csv,.json">
+            </div>
+
+            <div class="kb-action-row">
+              <button class="btn-process-kb" id="btn-process-kb">
+                🚀 Process & Build Knowledge Base
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ========================================================= -->
+      <!-- TAB 3: SYSTEM & MODELS                                    -->
+      <!-- ========================================================= -->
+      <section class="tab-pane" id="pane-system" style="display: none;">
+        <div class="pane-content-wrapper">
+
+          <div class="pane-header">
+            <h2 class="pane-title">⚙️ System & Model Observatory</h2>
+            <p class="pane-subtitle">
+              Live diagnostics of the ThyroGuard clinical pipeline components.
+            </p>
+          </div>
+
+          <!-- Pipeline Component Status -->
+          <div class="sys-block">
+            <h3 class="sys-block-title">Pipeline Component Status</h3>
+            <div class="component-status-list">
+              
+              <div class="component-row">
+                <div class="comp-left">
+                  <span class="comp-dot active"></span>
+                  <span class="comp-name">FAISS Vector Store</span>
+                </div>
+                <div class="comp-right">
+                  <span class="comp-badge">Loaded</span>
+                  <span class="comp-detail">3,073 units</span>
+                </div>
+              </div>
+
+              <div class="component-row">
+                <div class="comp-left">
+                  <span class="comp-dot active"></span>
+                  <span class="comp-name">BM25 Keyword Index</span>
+                </div>
+                <div class="comp-right">
+                  <span class="comp-badge">Loaded</span>
+                </div>
+              </div>
+
+              <div class="component-row">
+                <div class="comp-left">
+                  <span class="comp-dot active"></span>
+                  <span class="comp-name">BGE Cross-Encoder Reranker</span>
+                </div>
+                <div class="comp-right">
+                  <span class="comp-badge">Loaded</span>
+                  <span class="comp-detail">BAAI/bge-reranker-v2-m3</span>
+                </div>
+              </div>
+
+              <div class="component-row">
+                <div class="comp-left">
+                  <span class="comp-dot active"></span>
+                  <span class="comp-name">LLM (Groq API)</span>
+                </div>
+                <div class="comp-right">
+                  <span class="comp-badge">Loaded</span>
+                  <span class="comp-detail" id="sys-llm-name">qwen/qwen3.8-27b</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Compute Resources -->
+          <div class="sys-block">
+            <h3 class="sys-block-title">Compute Resources</h3>
+            <div class="compute-grid">
+              <div class="compute-card">
+                <div class="compute-label">Cuda Available</div>
+                <div class="compute-val" id="compute-cuda">False</div>
+              </div>
+              <div class="compute-card">
+                <div class="compute-label">Device Count</div>
+                <div class="compute-val" id="compute-count">0</div>
+              </div>
+              <div class="compute-card">
+                <div class="compute-label">Gpu Name</div>
+                <div class="compute-val" id="compute-gpu">N/A (CPU Mode)</div>
+              </div>
+              <div class="compute-card">
+                <div class="compute-label">Vram Gb</div>
+                <div class="compute-val" id="compute-vram">0.0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Active Model Configuration -->
+          <div class="sys-block">
+            <h3 class="sys-block-title">Active Model Configuration</h3>
+            <div class="model-config-grid">
+              
+              <div class="model-cfg-card">
+                <div class="cfg-header">EMBEDDING MODEL</div>
+                <div class="cfg-body">
+                  <div class="cfg-model-name">BAAI/bge-m3</div>
+                  <div class="cfg-sub">Dimension: 1024 • Multi-lingual & Dense Retrieval</div>
+                </div>
+              </div>
+
+              <div class="model-cfg-card">
+                <div class="cfg-header">RERANKER</div>
+                <div class="cfg-body">
+                  <div class="cfg-model-name">BAAI/bge-reranker-v2-m3</div>
+                  <div class="cfg-sub">SOTA Cross-Encoder • Top-k Rerank</div>
+                </div>
+              </div>
+
+              <div class="model-cfg-card">
+                <div class="cfg-header">LANGUAGE MODEL</div>
+                <div class="cfg-body">
+                  <div class="cfg-model-name" id="cfg-llm-model">qwen/qwen3.8-27b</div>
+                  <div class="cfg-sub">Provider: groq • Temp: 0.1 • Max tokens: 700</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Full Configuration (JSON) -->
+          <div class="sys-block">
+            <h3 class="sys-block-title">Full Configuration (JSON)</h3>
+            <details class="cfg-json-accordion">
+              <summary class="cfg-summary">
+                <span class="chevron">›</span> View models.yaml configuration
+              </summary>
+              <pre class="cfg-json-block" id="cfg-json-view">
+{
+  "generator": {
+    "provider": "groq",
+    "primary_model": "qwen/qwen3.8-27b",
+    "temperature": 0.1,
+    "max_tokens": 700,
+    "reasoning_format": "hidden"
+  },
+  "reranker": {
+    "model_name": "BAAI/bge-reranker-v2-m3",
+    "device": "cpu",
+    "top_k": 5
+  },
+  "retrieval": {
+    "embedding_model": "BAAI/bge-base-en-v1.5",
+    "hybrid": true,
+    "alpha": 0.6
+  }
+}
+              </pre>
+            </details>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

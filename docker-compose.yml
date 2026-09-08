@@ -1,0 +1,69 @@
+services:
+  thyroguard-cache:
+    image: redis:7-alpine
+    container_name: thyroguard_redis_cache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - thyroguard-net
+
+  thyroguard-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: thyroguard_clinical_api
+    depends_on:
+      thyroguard-cache:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - LOG_LEVEL=INFO
+      - REDIS_URL=redis://thyroguard-cache:6379/0
+      - GROQ_API_KEY=${GROQ_API_KEY:-}
+      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./config:/app/config
+      - ./data:/app/data
+      - ./reports:/app/reports
+      - hf_cache:/root/.cache
+
+    restart: unless-stopped
+    networks:
+      - thyroguard-net
+
+  thyroguard-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    container_name: thyroguard_web_ui
+    depends_on:
+      - thyroguard-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app/frontend
+    restart: unless-stopped
+    networks:
+      - thyroguard-net
+
+networks:
+  thyroguard-net:
+    driver: bridge
+
+volumes:
+  redis_data:
+  hf_cache:
+

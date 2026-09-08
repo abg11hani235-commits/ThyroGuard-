@@ -1,0 +1,10 @@
+{
+  "evaluation_protocol": "Deterministic Scope & Adversarial Safety Gate",
+  "sample_size": 20,
+  "metrics": {
+    "OOS_Refusal_Recall": 1.0,
+    "Adversarial_Refusal_Recall": 0.8,
+    "False_Refusal_Rate": 0.0,
+    "Unsafe_Response_Rate": 0.0
+  }
+}

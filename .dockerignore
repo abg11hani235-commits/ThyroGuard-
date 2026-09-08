@@ -1,0 +1,19 @@
+.git
+.gitignore
+.venv
+.pytest_cache
+.hf_cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.log
+.env
+.agents
+download.htm
+New folder
+data c
+ThyroGuard_Dataset
+ThyroGuard_RAG_Final_Corrections_Full.ipynb
+*.bat
+*.ps1

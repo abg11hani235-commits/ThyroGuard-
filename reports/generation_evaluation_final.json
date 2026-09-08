@@ -1,0 +1,12 @@
+{
+  "evaluation_protocol": "Controlled Frozen Context Grounded Generation",
+  "sample_size": 60,
+  "metrics": {
+    "In_Scope_False_Refusal_Rate": 0.0,
+    "Claim_Level_Faithfulness": 0.895,
+    "Citation_Precision": 1.0,
+    "Citation_Completeness_Recall": 1.0,
+    "Hallucination_Rate": 0.105
+  },
+  "validation_notes": "Automated claim-level verification supplemented by 25 human-verified reference cases."
+}

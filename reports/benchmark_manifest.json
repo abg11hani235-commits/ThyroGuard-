@@ -1,0 +1,26 @@
+{
+  "benchmark_version": "1.0.0",
+  "system_name": "ThyroGuard",
+  "description": "Leakage-controlled Clinical RAG Benchmark for Thyroid Endocrinology",
+  "corpus": {
+    "total_documents": 8,
+    "total_pages": 431,
+    "total_chunks": 3073,
+    "sha256_checksum": "2349d8831ce374ff52df6eb9704a58830baf2b86a396c8521a870774a8400d21",
+    "file_path": "data/processed/FROZEN_CORPUS.json"
+  },
+  "evaluation_dataset": {
+    "total_queries": 80,
+    "in_scope_retrieval_queries": 60,
+    "out_of_scope_queries": 10,
+    "adversarial_queries": 10,
+    "total_gold_claims": 121,
+    "file_path": "data/evaluation/gold_evaluation_dataset.json"
+  },
+  "models": {
+    "embedding": "BAAI/bge-base-en-v1.5",
+    "sparse": "BM25Okapi",
+    "reranker": "cross-encoder/ms-marco-MiniLM-L-6-v2",
+    "generator_backend": "Qwen / Grounded Synthesis"
+  }
+}
