@@ -1661,3 +1661,105 @@ body.dark-mode .btn-clear-history:hover {
   border-color: rgba(239, 68, 68, 0.3);
   color: #f87171;
 }
+
+/* Assistant Chat & Response Cards Dark Mode */
+body.dark-mode .user-query-card {
+  background-color: #1e1b4b;
+  border-color: #3730a3;
+  color: #e0e7ff;
+}
+
+body.dark-mode .assistant-card,
+body.dark-mode .assistant-answer-card {
+  background-color: #0e1626;
+  border-color: #1e293b;
+}
+
+body.dark-mode .assistant-stethoscope-icon {
+  background-color: #131f33;
+  border-color: #1e293b;
+  color: #818cf8;
+}
+
+body.dark-mode .assistant-answer-body {
+  color: #e2e8f0;
+}
+
+body.dark-mode .assistant-answer-body strong {
+  color: #ffffff;
+}
+
+body.dark-mode .assistant-divider {
+  border-top-color: #1e293b;
+}
+
+body.dark-mode .assistant-disclaimer {
+  color: #94a3b8;
+}
+
+body.dark-mode .evidence-metrics-box {
+  background-color: #080d1a;
+  border-color: #1e293b;
+}
+
+body.dark-mode .metric-col-title {
+  color: #94a3b8;
+}
+
+body.dark-mode .metric-col-val,
+body.dark-mode .conf-bar-val {
+  color: #f8fafc;
+}
+
+body.dark-mode .conf-bar-track {
+  background-color: #1e293b;
+}
+
+body.dark-mode .cited-evidence-accordion {
+  border-color: #1e293b;
+  background-color: #0b1220;
+}
+
+body.dark-mode .cited-evidence-accordion summary {
+  color: #38bdf8;
+}
+
+body.dark-mode .chunk-card {
+  background-color: #0e1626;
+  border-color: #1e293b;
+}
+
+body.dark-mode .chunk-tag {
+  background-color: #162238;
+  color: #38bdf8;
+}
+
+body.dark-mode .chunk-score {
+  color: #94a3b8;
+}
+
+body.dark-mode .chunk-body {
+  color: #cbd5e1;
+}
+
+body.dark-mode .chat-top-bar {
+  background-color: #080d1a;
+  border-bottom-color: #1e293b;
+}
+
+body.dark-mode .btn-top-new-consultation {
+  background-color: #0e1626;
+  border-color: #1e293b;
+  color: #cbd5e1;
+}
+
+body.dark-mode .btn-top-new-consultation:hover {
+  background-color: #162238;
+  color: #38bdf8;
+}
+
+/* Switch Toggle Glow when Dark Mode Active */
+input:checked + .slider {
+  background-color: #4f46e5 !important;
+  box-shadow: 0 0 12px rgba(79, 70, 229, 0.45) !important;
+}
