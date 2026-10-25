@@ -97,7 +97,7 @@ The benchmark suite ([`data/evaluation/gold_evaluation_dataset.json`](data/evalu
 
 ## 4. 4-Way Retrieval Ablation Benchmark
 
-Evaluated across all 60 clinical queries on the identical frozen corpus ([`RETRIEVAL_ABLATION_REPORT.md`](RETRIEVAL_ABLATION_REPORT.md)):
+Evaluated across all 60 clinical queries on the identical frozen corpus ([`reports/RETRIEVAL_ABLATION_REPORT.md`](reports/RETRIEVAL_ABLATION_REPORT.md)):
 
 | Configuration | P@3 | P@5 | R@3 | R@5 | R@8 | MRR | NDCG@5 | Hit@5 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -115,7 +115,7 @@ Evaluated across all 60 clinical queries on the identical frozen corpus ([`RETRI
 
 ## 5. Clinical Generation & Safety Evaluation
 
-Evaluated against identical frozen retrieved contexts ([`GENERATION_EVALUATION_REPORT.md`](GENERATION_EVALUATION_REPORT.md)):
+Evaluated against identical frozen retrieved contexts ([`reports/GENERATION_EVALUATION_REPORT.md`](reports/GENERATION_EVALUATION_REPORT.md)):
 
 ### Clinical Grounding (60 In-Scope Queries):
 - **In-Scope False Refusal Rate (FRR)**: **0.0%** (Zero false rejections on valid clinical queries)
@@ -147,7 +147,19 @@ ThyroGuard/
 │   │   └── chroma_bge/           # ChromaDB vector index
 │   └── evaluation/
 │       └── gold_evaluation_dataset.json # 80 partitioned evaluation cases
-├── reports/                       # Immutable benchmark reports & audit manifests
+├── notebooks/
+│   ├── exploration.ipynb          # End-to-end RAG experimentation & analysis notebook
+│   └── ThyroGuard_RAG_Google_Colab.ipynb # Cloud experimentation pipeline
+├── reports/
+│   ├── GENERATION_EVALUATION_REPORT.md # Grounding & safety benchmark report
+│   ├── RETRIEVAL_ABLATION_REPORT.md    # 4-way retrieval ablation study
+│   ├── RETRIEVAL_BENCHMARK_REPORT.md   # Multi-layer retrieval benchmark
+│   └── benchmark_manifest.json         # Evaluation manifest & raw metrics
+├── scripts/
+│   ├── run_all.bat                # Launch API, Web UI, and Streamlit together
+│   ├── run_api.bat                # Launch FastAPI backend service
+│   ├── run_ui.bat                 # Launch Streamlit clinical observatory
+│   └── ...                        # Corpus ingestion, ablation, and benchmarking scripts
 ├── src/
 │   ├── ingestion/                 # PDF extraction, normalization, deterministic chunker
 │   ├── retrieval/                 # Dense, BM25, Hybrid RRF, CrossEncoder reranking
@@ -187,17 +199,17 @@ pytest tests/
 
 #### Option A: One-Click Launch
 ```bash
-.\run_all.bat
+.\scripts\run_all.bat
 ```
 
 #### Option B: Standalone Launch
 ```bash
 # Terminal 1: FastAPI Backend (Port 8000)
-.\run_api.bat
+.\scripts\run_api.bat
 # or: uvicorn app.api:app --host 0.0.0.0 --port 8000
 
 # Terminal 2: Streamlit UI (Port 8501)
-.\run_ui.bat
+.\scripts\run_ui.bat
 # or: streamlit run ui/streamlit_app.py --server.port 8501
 ```
 
