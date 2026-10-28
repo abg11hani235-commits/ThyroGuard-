@@ -1,17 +1,21 @@
 import os
+os.environ.setdefault("HF_HUB_OFFLINE", "1")
+os.environ.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
 import json
 import hashlib
 import yaml
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 
+# Load Environment Variables & Settings
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+load_dotenv(os.path.join(PROJECT_ROOT, ".env"))
+
 from .schemas import QueryRequest, QueryResponse, HealthResponse, InventoryItem, CitationAudit
 from src.pipeline.rag_pipeline import ThyroGuardPipeline
-
-# Load Settings
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 CONFIG_PATH = os.path.join(PROJECT_ROOT, "config", "settings.yaml")
 FRONTEND_DIR = os.path.join(PROJECT_ROOT, "frontend")
 
@@ -87,14 +91,17 @@ def clinical_query(request: QueryRequest):
         "valid": True, "citation_count": 0, "valid_citations": [], "hallucinated_citations": [], "precision": 1.0
     })
 
+    dosage_audit_data = res.get("dosage_audit")
     return {
         "query": request.query,
         "answer": res["answer"],
         "citations": res["citations"],
         "claims": res.get("claims", []),
+        "sub_queries": res.get("sub_queries", []),
         "retrieved_chunk_ids": res["retrieved_chunk_ids"],
         "retrieved_chunks": res.get("retrieved_chunks", []),
         "citation_audit": CitationAudit(**cit_audit),
+        "dosage_audit": dosage_audit_data,
         "safety_status": res["safety_status"],
         "status": res["status"],
         "pipeline_trace": res.get("pipeline_trace", None),

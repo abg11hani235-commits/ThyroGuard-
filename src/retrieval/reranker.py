@@ -102,13 +102,41 @@ class CrossEncoderReranker:
         self.active_model_name = primary
         print(f"[Reranker] Enforcing Primary SOTA Model: {self.active_model_name} on device: {self.device}")
         
-        # Load primary SOTA reranker directly — no fallback to ms-marco
-        self.model = CrossEncoder(
-            self.active_model_name,
-            max_length=max_length,
-            device=self.device
-        )
-        print(f"[Reranker] {self.active_model_name} loaded successfully.")
+        # Load reranker with graceful fallback and pass-through protection
+        self.model = None
+        # 1. Try loading primary model locally first to prevent hanging on blocked/throttled networks
+        try:
+            self.model = CrossEncoder(
+                self.active_model_name,
+                max_length=max_length,
+                device=self.device,
+                local_files_only=True
+            )
+            print(f"[Reranker] {self.active_model_name} loaded successfully from local cache.")
+        except Exception:
+            # 2. Try loading primary online if possible
+            try:
+                self.model = CrossEncoder(
+                    self.active_model_name,
+                    max_length=max_length,
+                    device=self.device
+                )
+                print(f"[Reranker] {self.active_model_name} loaded successfully.")
+            except Exception as e:
+                logger.warning(f"[Reranker] Could not load primary model '{self.active_model_name}': {e}")
+                if fallback and fallback != self.active_model_name:
+                    try:
+                        self.model = CrossEncoder(fallback, max_length=max_length, device=self.device, local_files_only=True)
+                        print(f"[Reranker] Fallback model '{fallback}' loaded from local cache.")
+                    except Exception:
+                        try:
+                            self.model = CrossEncoder(fallback, max_length=max_length, device=self.device)
+                            print(f"[Reranker] Fallback model '{fallback}' loaded successfully.")
+                        except Exception as e2:
+                            logger.warning(f"[Reranker] Fallback also failed: {e2}. Operating in hybrid pass-through mode.")
+                            self.model = None
+                else:
+                    print("[Reranker] Operating in hybrid pass-through mode (BM25 + Dense RRF ranking).")
 
     def set_corpus_lookup(self, lookup: Dict[str, str]) -> None:
         self.corpus_lookup = lookup
@@ -136,14 +164,22 @@ class CrossEncoderReranker:
         # Cap candidates to top-12 to maintain high precision without CPU latency spikes
         candidates_to_score = candidate_ids[:12]
 
-        # Enrich query for dosage queries
-        scoring_query = _enrich_dosage_query(query)
+        if self.model is None:
+            # Fallback pass-through: preserve hybrid RRF ordering with synthetic score
+            return [(cid, float(1.0 - idx * 0.05)) for idx, cid in enumerate(candidates_to_score[:top_k])]
 
-        pairs = [
-            [scoring_query, (self.corpus_lookup.get(cid, "") or "")[:1500]]
-            for cid in candidates_to_score
-        ]
-        scores = self.model.predict(pairs)
-        scored = list(zip(candidates_to_score, [float(s) for s in scores]))
-        scored.sort(key=lambda x: x[1], reverse=True)
-        return scored[:top_k]
+        try:
+            # Enrich query for dosage queries
+            scoring_query = _enrich_dosage_query(query)
+
+            pairs = [
+                [scoring_query, (self.corpus_lookup.get(cid, "") or "")[:1500]]
+                for cid in candidates_to_score
+            ]
+            scores = self.model.predict(pairs)
+            scored = list(zip(candidates_to_score, [float(s) for s in scores]))
+            scored.sort(key=lambda x: x[1], reverse=True)
+            return scored[:top_k]
+        except Exception as e:
+            logger.warning(f"[Reranker] Scoring error: {e}. Falling back to candidate order.")
+            return [(cid, float(1.0 - idx * 0.05)) for idx, cid in enumerate(candidates_to_score[:top_k])]

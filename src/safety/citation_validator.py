@@ -16,6 +16,7 @@ class CitationValidator:
             return {
                 "valid": True,
                 "citation_count": 0,
+                "valid_citations": [],
                 "hallucinated_citations": [],
                 "precision": 1.0
             }
